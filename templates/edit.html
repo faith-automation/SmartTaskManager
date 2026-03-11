@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit Task</title>
+</head>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background: linear-gradient(135deg, #ffe6f0, #ffd6eb);
+        margin: 40px;
+    }
+    .container {
+        max-width: 700px;
+        margin: auto;
+        background: #fff0f6;
+        padding: 25px;
+        border-radius: 15px;
+        box-shadow: 0px 6px 20px rgba(255, 182, 193, 0.4);
+    }
+    h1 {
+        text-align: center;
+        color: #d63384;
+    }
+
+    h2 {
+        color: #c2185b;
+    }
+    input, textarea {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 10px;
+        border-radius: 8px;
+        border: 1px solid #f8bbd0;
+        background-color: #fff;
+    }
+
+    input:focus, textarea:focus {
+        outline: none;
+        border: 1px solid #ec407a;
+        box-shadow: 0 0 5px rgba(236, 64, 122, 0.4);
+    }
+    button {
+        padding: 6px 14px;
+        margin-right: 5px;
+        cursor: pointer;
+        border-radius: 8px;
+        border: none;
+        font-weight: bold;
+    }
+
+    button:hover {
+        opacity: 0.85;
+    }
+</style>
+
+<body>
+<div class="container">
+
+    <h1>Smart Task Manager</h1>
+
+<h2>Edit Task</h2>
+
+<form method="POST">
+
+    <input type="text" name="title" value="{{ task.title }}">
+
+    <textarea name="description">{{ task.description }}</textarea>
+
+    <input type="date" name="due_date" value="{{task.due_date}}">
+
+    <button type="submit">Update Task</button>
+
+</form>
+
+<br>
+<a href="/back">Back</a>
+</div>
+
+</body>
+</html>
