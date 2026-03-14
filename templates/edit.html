@@ -6,37 +6,37 @@
 <style>
     body {
         font-family: Arial, sans-serif;
-        background: linear-gradient(135deg, #ffe6f0, #ffd6eb);
+        background: linear-gradient(135deg, #5a4bd6);
         margin: 40px;
     }
     .container {
         max-width: 700px;
         margin: auto;
-        background: #fff0f6;
+        background:white;
         padding: 25px;
         border-radius: 15px;
         box-shadow: 0px 6px 20px rgba(255, 182, 193, 0.4);
     }
     h1 {
         text-align: center;
-        color: #d63384;
+        color: #7b68ee;
     }
 
     h2 {
-        color: #c2185b;
+        color: #7b68ee;
     }
     input, textarea {
         width: 100%;
         padding: 10px;
         margin-bottom: 10px;
         border-radius: 8px;
-        border: 1px solid #f8bbd0;
-        background-color: #fff;
+        border: 1px solid #7b68ee;
+        background-color: white;
     }
 
     input:focus, textarea:focus {
         outline: none;
-        border: 1px solid #ec407a;
+        border: 1px solid #7b68ee;
         box-shadow: 0 0 5px rgba(236, 64, 122, 0.4);
     }
     button {
@@ -46,11 +46,28 @@
         border-radius: 8px;
         border: none;
         font-weight: bold;
+        background-color: #7b68ee;
     }
 
     button:hover {
         opacity: 0.85;
     }
+    .back-btn {
+    display: inline-block;
+    padding: 8px 15px;
+    background: #7b68ee;
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: bold;
+    margin-bottom: 15px;
+    transition: 0.3s ease;
+}
+
+.back-btn:hover {
+    background:#4839c2;
+    transform: scale(1.05);
+}
 </style>
 
 <body>
@@ -67,13 +84,32 @@
     <textarea name="description">{{ task.description }}</textarea>
 
     <input type="date" name="due_date" value="{{task.due_date}}">
+    <label>Priority</label>
+
+    <select name="priority">
+
+    <option value="Low" {% if task.priority == "Low" %}selected{% endif %}>🟢 Low</option>
+
+    <option value="Medium" {% if task.priority == "Medium" %}selected{% endif %}>🟡 Medium</option>
+
+    <option value="High" {% if task.priority == "High" %}selected{% endif %}>🔴 High</option>
+
+    </select>
+    <br><br>
+    <label>Status</label>
+       <select name="status">
+       <option value="Pending" {% if task.status == "Pending" %}selected{% endif %}>Pending</option>
+       <option value="Completed" {% if task.status == "Completed" %}selected{% endif %}>Completed</option>
+       </select>
+
+    <br><br>
 
     <button type="submit">Update Task</button>
 
 </form>
 
 <br>
-<a href="/back">Back</a>
+<a href="/" class="back-btn">← Back</a>
 </div>
 
 </body>

@@ -1,344 +1,443 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Smart Task Manager</title>
+    <title>TaskFlow - Smart Task Manager</title>
     <style>
-        body {
+        body{
             font-family: Arial, sans-serif;
-            background: linear-gradient(135deg, #ffe6f0, #ffd6eb);
-            margin: 40px;
+            margin:0;
+            background:#f6f3ff;
         }
 
-        .container {
-            max-width: 900px;
-            margin: auto;
-            background: #fff0f6;
-            padding: 25px;
-            border-radius: 15px;
-            box-shadow: 0px 6px 20px rgba(255, 182, 193, 0.4);
+        /* NAVBAR */
+        .navbar{
+            background: linear-gradient(90deg,#5a4bd6,#7b68ee);
+            color:white;
+            padding:15px 30px;
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+        }
+        .logo{
+            font-size:22px;
+            font-weight:bold;
+        }
+        .search-box input{
+            padding:7px;
+            border-radius:6px;
+            border:none;
+            width:200px;
         }
 
-        .navbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
+        /* DASHBOARD */
+        .dashboard{
+            display:flex;
+            gap:15px;
+            padding:20px;
+        }
+        .card{
+            flex:1;
+            background:white;
+            border-radius:10px;
+            padding:15px;
+            text-align:center;
+            box-shadow:0 3px 8px rgba(0,0,0,0.1);
+        }
+        .card h2{
+            color:#5a4bd6;
+            margin:0;
         }
 
-        .brand {
-            font-size: 22px;
-            font-weight: bold;
-            color: #d63384;
+        /* MAIN LAYOUT */
+        .main{
+            display:flex;
+            gap:20px;
+            padding:20px;
         }
 
-        .user-section {
-            display: flex;
-            align-items: center;
-            gap: 10px;
+        /* ADD TASK */
+        .add-task{
+            width:25%;
+            background:white;
+            padding:20px;
+            border-radius:10px;
+            box-shadow:0 3px 8px rgba(0,0,0,0.1);
         }
-
-        .avatar {
-            width: 35px;
-            height: 35px;
-            background: #ff80ab;
-            color: white;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-weight: bold;
-            box-shadow: 0 3px 10px rgba(255, 105, 180, 0.4);
+        .add-task input, .add-task textarea, .add-task select{
+            width:80%;
+            margin-bottom:10px;
+            padding:8px 28px;
+            border-radius:6px;
+            border:1px solid #ddd;
+            position:relative;
         }
-
-        .welcome-text {
-            font-weight: bold;
-            color: #c2185b;
+        .add-task input::placeholder{color:#888;}
+        .add-task button{
+            width:100%;
+            background:#5a4bd6;
+            color:white;
+            padding:10px;
+            border:none;
+            border-radius:6px;
+            cursor:pointer;
         }
+        .add-task button:hover{background:#4839c2;}
 
-        .logout-btn {
-            display: inline-block;
-            padding: 8px 15px;
-            background: #ff4d88;
-            color: white;
-            text-decoration: none;
-            border-radius: 8px;
-            font-weight: bold;
-            transition: 0.3s ease;
+        /* TASK LIST */
+        .tasks{
+            width:45%;
+            background:white;
+            padding:20px;
+            border-radius:10px;
+            box-shadow:0 3px 8px rgba(0,0,0,0.1);
+            max-height:600px;
+            overflow-y:auto;
         }
-
-        .logout-btn:hover {
-            background: #e6005c;
-            transform: scale(1.05);
-        }
-
-        h1, h2 {
-            color: #d63384;
-            text-align: center;
-        }
-
-        input, textarea {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 10px;
-            border-radius: 8px;
-            border: 1px solid #f8bbd0;
-            background-color: #fff;
-        }
-
-        input:focus, textarea:focus {
-            outline: none;
-            border: 1px solid #ec407a;
-            box-shadow: 0 0 5px rgba(236, 64, 122, 0.4);
-        }
-
-        button {
-            padding: 6px 14px;
-            margin-right: 5px;
-            cursor: pointer;
-            border-radius: 8px;
-            border: none;
-            font-weight: bold;
-        }
-
-        button:hover {
-            opacity: 0.85;
-        }
-
-        /* Calendar Styles */
-        .calendar-nav {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-
-        .calendar-nav a {
-            text-decoration: none;
-            color: #d63384;
-            font-weight: bold;
-            margin: 0 10px;
-        }
-
-        .calendar-nav span {
-            font-weight: bold;
-        }
-
-        .calendar {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 5px;
-            max-height: 350px;
-            overflow-y: auto;
-            padding: 5px;
-        }
-
-        .calendar-header {
-            text-align: center;
-            font-weight: bold;
-            color: #d63384;
-            padding: 4px 0;
-        }
-
-        .calendar-day {
-            border: 1px solid #f8bbd0;
-            border-radius: 6px;
-            padding: 4px;
-            min-height: 50px;
-            font-size: 12px;
-            background: #fff0f6;
-        }
-
-        .calendar-day.empty {
-            background: transparent;
-            border: none;
-        }
-
-        .calendar-day.today {
-            border: 2px solid #c2185b;
-            background-color: #ffe6f0;
-        }
-
-        .calendar-task {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin: 2px 0;
-            padding: 2px 4px;
-            border-radius: 4px;
-            font-size: 11px;
-            color: #fff;
-        }
-
-        .calendar-task.completed { background-color: #ba68c8; opacity: 0.75; }
-        .calendar-task.overdue { background-color: #ff4d4d; }
-        .calendar-task.due-today { background-color: #ff9800; }
-        .calendar-task.upcoming { background-color: #4caf50; }
-
-        .task-actions-calendar a {
-            margin-left: 3px;
-            text-decoration: none;
-            color: #fff;
-            font-size: 10px;
-        }
-
-        .task-actions-calendar a:hover { opacity: 0.7; }
-
-        /* Task Card Styles */
         .task-card {
-            background: #ffffff;
-            padding: 12px;
-            margin-top: 12px;
-            border-left: 5px solid #ff80ab;
-            border-radius: 10px;
-            transition: 0.3s ease;
+            padding:12px;
+            border-radius:8px;
+            margin-bottom:10px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .task-card:hover {
+           transform: scale(1.02);
+           box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .priority-High{border-left:5px solid #ff4d4d; background:#ffe6e6;}
+        .priority-Medium{border-left:5px solid #ffa500; background:#fff3e6;}
+        .priority-Low{border-left:5px solid #28a745; background:#e6ffe6;}
+
+        .task-actions a{
+            text-decoration:none;
+            margin-right:8px;
+            font-size:16px;
+            color:#5a4bd6;
         }
 
-        .task-card:hover { transform: translateY(-3px); }
-        .task-date { font-size: 12px; color: #666; margin-top: 5px; }
-
-        .overdue { border-left: 6px solid red; background-color: #ffe6e6; }
-        .due-today { border-left: 6px solid orange; background-color: #fff6e6; }
-        .upcoming { border-left: 6px solid green; background-color: #e6ffe6; }
-        .completed { border-left: 5px solid #ba68c8; opacity: 0.75; }
-
-        .task-actions a {
-            margin-right: 5px;
-            text-decoration: none;
-            padding: 4px 8px;
-            border-radius: 6px;
-            font-weight: bold;
-            color: white;
+        /* CALENDAR */
+        .calendar-column{
+            width:30%;
+            background:white;
+            padding:20px;
+            border-radius:10px;
+            box-shadow:0 3px 8px rgba(0,0,0,0.1);
+            max-height:600px;
+            overflow-y:auto;
         }
+        .calendar-nav{
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            margin-bottom:10px;
+            font-size:14px;
+        }
+        .calendar-nav a{
+            text-decoration:none;
+            color:#5a4bd6;
+            font-weight:bold;
+        }
+        .calendar-grid{
+            display:grid;
+            grid-template-columns:repeat(7,1fr);
+            gap:4px;
+        }
+        .calendar-header{
+            font-weight:bold;
+            text-align:center;
+        }
+        .calendar-day{
+            background:#faf9ff;
+            border-radius:6px;
+            padding:4px;
+            min-height:60px;
+            font-size:12px;
+            position:relative;
+        }
+        .calendar-day.today{
+            background:#dcd4ff;
+        }
+        .calendar-task{
+            font-size:11px;
+            color:white;
+            padding:2px 4px;
+            margin-top:3px;
+            border-radius:4px;
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            position: relative;
+            transition: transform 0.2s ease, opacity 0.2s ease;
+            cursor: pointer;
+        }
+        .calendar-task:hover {
+            transform: scale(1.05);
+            opacity: 0.9;
+        }
+        
+        .priority-High{background:#ff4d4d;}
+        .priority-Medium{background:#ffa500;}
+        .priority-Low{background:#28a745;}
 
-        .complete-btn { background-color: #4caf50; }
-        .edit-btn { background-color: #2196f3; }
-        .delete-btn { background-color: #f44336; }
+        .calendar-task a{
+            margin-left:3px;
+            text-decoration:none;
+            color:white;
+            font-size:10px;
+        }
+        .task-actions-calendar {
+            opacity: 0;
+            position: absolute;
+            right: 5px;
+            top: 2px;
+            display: flex;
+            gap: 3px;
+            transition: opacity 0.2s ease;
+       }
+       .calendar-task:hover .task-actions-calendar {
+           opacity: 1;
+       }
 
-        .complete-btn:hover,
-        .edit-btn:hover,
-        .delete-btn:hover { opacity: 0.85; }
+/* ICON HOVER */
+       .task-actions a, .task-actions-calendar a {
+            transition: transform 0.15s ease, opacity 0.2s ease;
+        }
+       .task-actions a:hover, .task-actions-calendar a:hover {
+             transform: scale(1.2);
+             opacity: 0.8;
+        }
+        /* PRIORITY COLOR HIGHLIGHT ON HOVER */
+       .priority-High:hover { background:#ff6666; }
+       .priority-Medium:hover { background:#ffb84d; }
+       .priority-Low:hover { background:#4fd17f; }
+
+        .calendar-column::-webkit-scrollbar{
+            width:6px;
+        }
+        .calendar-column::-webkit-scrollbar-thumb{
+            background:#7b68ee;
+            border-radius:10px;
+        }
+       
+        .highlight {
+            border: 2px solid #ff4d4d;
+            background-color: #fff0f0;
+            transition: background 0.3s ease, border 0.3s ease;
+        }
+        .task-filters{
+    margin-bottom:15px;
+}
+
+.task-filters a{
+    text-decoration:none;
+    padding:6px 12px;
+    margin-right:8px;
+    background:#eee;
+    border-radius:6px;
+    font-size:14px;
+}
+
+.task-filters a:hover{
+    background:#7b68ee;
+    color:white;
+}
+.reminder-box{
+    padding:15px 20px;
+}
+
+.reminder{
+    background:white;
+    border-left:6px solid #7b68ee;
+    padding:10px 15px;
+    margin-bottom:10px;
+    border-radius:8px;
+    box-shadow:0 2px 6px rgba(0,0,0,0.1);
+}
+
+.reminder.today{
+    border-left:6px solid red;
+}
+
+.reminder.tomorrow{
+    border-left:6px solid orange;
+}
+
+.reminder ul{
+    margin:5px 0 0 15px;
+}
+.analytics-btn {
+    display: inline-block;
+    padding: 8px 15px;
+    background:#7b68ee;
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: bold;
+    margin-bottom: 15px;
+    transition: 0.3s ease;
+}
+.logout-btn {
+    display: inline-block;
+    padding: 8px 15px;
+    background:#7b68ee;
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: bold;
+    margin-bottom: 15px;
+    transition: 0.3s ease;
+}
+
     </style>
 </head>
 <body>
-<div class="container">
 
-    <!-- Navbar -->
-    <div class="navbar">
-        <div class="brand">🌸 Smart Task Manager</div>
-        <div class="user-section">
-            <div class="avatar">{{ username[0]|upper }}</div>
-            <span class="welcome-text">Hi, {{ username }} 👋</span>
-            <a href="/logout" class="logout-btn">Logout</a>
+<!-- NAVBAR -->
+<div class="navbar">
+    <div class="logo">✔ TaskFlow</div>
+    <div class="search-box">
+        <form method="GET" action="/">
+            <input type="text" name="search" placeholder="Search tasks..." value="{{ request.args.get('search','') }}" list="taskSuggestions">
+            <datalist id="taskSuggestions">
+                {% for task in tasks %}
+                    <option value="{{ task.title }}">
+                {% endfor %}
+            </datalist>
+            <button type="submit">Search</button>
+        </form>
+    </div>
+    <div>Hi {{ username }} <a href="/logout" class="logout-btn" style="color:white;margin-left:15px;">Logout</a></div>
+    <a href="/analytics" class="analytics-btn" style="color:white;margin-left:20px;">Analytics</a>
+</div>
+
+{% if due_today or due_tomorrow %}
+<div class="reminder-box">
+
+    {% if due_today %}
+    <div class="reminder today">
+        ⚠ Tasks Due Today
+        <ul>
+        {% for task in due_today %}
+            <li>{{task.title}}</li>
+        {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+    {% if due_tomorrow %}
+    <div class="reminder tomorrow">
+        ⏰ Tasks Due Tomorrow
+        <ul>
+        {% for task in due_tomorrow %}
+            <li>{{task.title}}</li>
+        {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+</div>
+{% endif %}
+
+<!-- DASHBOARD -->
+<div class="dashboard">
+    <div class="card"><h3>Total Tasks</h3><h2>{{ total_tasks }}</h2></div>
+    <div class="card"><h3>Completed</h3><h2>{{ completed_tasks }}</h2></div>
+    <div class="card"><h3>Pending</h3><h2>{{ pending_tasks }}</h2></div>
+    <div class="card"><h3>Overdue</h3><h2>{{ overdue_tasks }}</h2></div>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="main">
+
+    <!-- ADD TASK -->
+    <div class="add-task">
+        <h3>Add Task</h3>
+        <form action="/add" method="POST">
+            <input type="text" name="title" placeholder="📝 Task Title" required>
+            <textarea name="description" placeholder="📄 Description"></textarea>
+            <input type="date" name="due_date">
+            <select name="priority">
+                <option value="Low">🟢 Low</option>
+                <option value="Medium">🟡 Medium</option>
+                <option value="High">🔴 High</option>
+            </select>
+            <button>Add Task</button>
+        </form>
+    </div>
+    
+
+    <!-- ALL TASKS -->
+    <div class="tasks">
+        <div class="task-filters">
+            <a href="/?filter=all">All</a>
+            <a href="/?filter=pending">Pending</a>
+            <a href="/?filter=completed">Completed</a>
+            <a href="/?filter=overdue">Overdue</a>
         </div>
-    </div>
-
-    <h1>Welcome!</h1>
-    <p>Hello {{ username }}, here are your tasks</p>
-
-    <!-- Add Task -->
-    <h2>Add Task</h2>
-    <form action="/add" method="POST">
-        <input type="text" name="title" placeholder="Task Title" required>
-        <textarea name="description" placeholder="Task Description"></textarea>
-        <input type="date" name="due_date" required>
-        <button type="submit">Add Task</button>
-    </form>
-
-    <hr>
-
-    <!-- Filter -->
-    <h2>Filter</h2>
-    <a href="/">All</a> |
-    <a href="/filter/Pending">Pending</a> |
-    <a href="/filter/Completed">Completed</a>
-
-    <!-- Calendar Navigation -->
-    <div class="calendar-nav">
-        {% set prev_month = current_month - 1 %}
-        {% set prev_year = current_year %}
-        {% if prev_month == 0 %}
-            {% set prev_month = 12 %}
-            {% set prev_year = current_year -1 %}
-        {% endif %}
-        {% set next_month = current_month +1 %}
-        {% set next_year = current_year %}
-        {% if next_month == 13 %}
-            {% set next_month =1 %}
-            {% set next_year = current_year +1 %}
-        {% endif %}
-
-        {% if filter_status %}
-            <a href="/filter/{{ filter_status }}?month={{ prev_month }}&year={{ prev_year }}">← Previous</a>
-            <span>📅 {{ current_month }} / {{ current_year }}</span>
-            <a href="/filter/{{ filter_status }}?month={{ next_month }}&year={{ next_year }}">Next →</a>
-        {% else %}
-            <a href="/?month={{ prev_month }}&year={{ prev_year }}">← Previous</a>
-            <span>📅 {{ current_month }} / {{ current_year }}</span>
-            <a href="/?month={{ next_month }}&year={{ next_year }}">Next →</a>
-        {% endif %}
-    </div>
-
-    <!-- Calendar -->
-    <div class="calendar">
-        <!-- Weekday headers -->
-        {% for wd in ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'] %}
-            <div class="calendar-header">{{ wd }}</div>
-        {% endfor %}
-
-        <!-- Empty slots before first day -->
-        {% for i in range(first_weekday) %}
-            <div class="calendar-day empty"></div>
-        {% endfor %}
-
-        <!-- Days of month -->
-        {% for day in range(1, num_days+1) %}
-            {% set date_obj = today.replace(year=current_year, month=current_month, day=day) %}
-            <div class="calendar-day {% if date_obj == today %}today{% endif %}">
-                <strong>{{ day }}</strong>
-                {% if date_obj in tasks_by_date %}
-                    {% for task in tasks_by_date[date_obj] %}
-                        <div class="calendar-task
-                            {% if task.status == 'Completed' %}completed{% elif task.due_date < today %}overdue{% elif task.due_date == today %}due-today{% else %}upcoming{% endif %}">
-                            <span>{{ task.title }}</span>
-                            <div class="task-actions-calendar">
-                                {% if task.status != 'Completed' %}
-                                    <a href="/complete/{{ task.id }}" title="Complete">✔</a>
-                                {% endif %}
-                                <a href="/edit/{{ task.id }}" title="Edit">✎</a>
-                                <a href="/delete/{{ task.id }}" title="Delete">🗑</a>
-                            </div>
-                        </div>
-                    {% endfor %}
-                {% endif %}
-            </div>
-        {% endfor %}
-    </div>
-
-    <hr>
-
-    <!-- Existing Task List -->
-    <h2>All Tasks</h2>
-    {% if tasks %}
-        {% for task in tasks %}
-            <div class="task-card
-                {% if task.status == 'Completed' %}completed{% elif task.due_date < today %}overdue{% elif task.due_date == today %}due-today{% else %}upcoming{% endif %}">
-                <h3 class="task-title">{{ task.title }}</h3>
-                <p class="task-description">{{ task.description }}</p>
-                <p class="task-date">Due: {{ task.due_date }}</p>
-                <p class="task-status">Status: {{ task.status }}</p>
+        <h3>All Tasks</h3>
+        {% if tasks %}
+            {% set search_term = request.args.get('search','').lower() %}
+            {% for task in tasks %}
+            <div class="task-card priority-{{task.priority}}
+                {% if search_query and search_query.lower() in task.title.lower() %} highlight{% endif %}">
+                <strong>{{task.title}}</strong><br>
+                {{task.description}}<br>
+                Priority: {{task.priority}}
                 <div class="task-actions">
                     {% if task.status != 'Completed' %}
-                        <a href="/complete/{{ task.id }}" class="complete-btn">Complete</a>
+                        <a href="/complete/{{task.id}}">✔</a>
                     {% endif %}
-                    <a href="/edit/{{ task.id }}" class="edit-btn">Edit</a>
-                    <a href="/delete/{{ task.id }}" class="delete-btn">Delete</a>
+                    <a href="/edit/{{task.id}}">✎</a>
+                    <a href="/delete/{{task.id}}">🗑</a>
                 </div>
             </div>
-            <hr>
-        {% endfor %}
-    {% else %}
-        <p class="no-tasks">No tasks yet. Add your first task.</p>
-    {% endif %}
+            {% endfor %}
+        {% else %}
+            <p>No tasks yet.</p>
+        {% endif %}
+    </div>
+
+
+    <!-- CALENDAR -->
+    <div class="calendar-column">
+        <div class="calendar-nav">
+            {% set prev_month = current_month -1 %}
+            {% set prev_year = current_year %}
+            {% if prev_month == 0 %}{% set prev_month =12 %}{% set prev_year=current_year-1 %}{% endif %}
+            {% set next_month = current_month +1 %}
+            {% set next_year = current_year %}
+            {% if next_month==13 %}{% set next_month=1 %}{% set next_year=current_year+1 %}{% endif %}
+            <a href="/?month={{ prev_month }}&year={{ prev_year }}">← Previous</a>
+            <strong>📅 {{ current_month }}/{{ current_year }}</strong>
+            <a href="/?month={{ next_month }}&year={{ next_year }}">Next →</a>
+        </div>
+
+        <div class="calendar-grid">
+            {% for wd in ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'] %}
+                <div class="calendar-header">{{ wd }}</div>
+            {% endfor %}
+
+            {% for i in range(first_weekday) %}<div></div>{% endfor %}
+
+            {% for day in range(1, num_days+1) %}
+                {% set date_obj = today.replace(year=current_year, month=current_month, day=day) %}
+                <div class="calendar-day {% if date_obj==today %}today{% endif %}">
+                    <strong>{{ day }}</strong>
+                    {% if date_obj in tasks_by_date %}
+                        {% for task in tasks_by_date[date_obj] %}
+                            <div class="calendar-task priority-{{ task.priority }}">
+                                <span>{{ task.title }} ({{ task.priority }})</span>
+                                <div>
+                                    {% if task.status != 'Completed' %}<a href="/complete/{{ task.id }}">✔</a>{% endif %}
+                                    <a href="/edit/{{ task.id }}">✎</a>
+                                    <a href="/delete/{{ task.id }}">🗑</a>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
 
 </div>
 </body>

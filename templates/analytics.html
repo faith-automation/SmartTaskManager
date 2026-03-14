@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>Task Analytics</title>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+
+body{
+font-family:Arial;
+background:#f6f3ff;
+margin:0;
+}
+
+.navbar{
+background:linear-gradient(90deg,#5a4bd6,#7b68ee);
+color:white;
+padding:15px 30px;
+display:flex;
+justify-content:space-between;
+}
+
+.container{
+padding:40px;
+}
+.card{
+background:white;
+padding:25px;
+border-radius:10px;
+box-shadow:0 3px 8px rgba(0,0,0,0.1);
+width:500px;
+margin:auto;
+}
+.charts{
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:25px;
+max-width:1000px;
+margin:auto;
+}
+
+.chart-card{
+background:white;
+padding:25px;
+border-radius:10px;
+box-shadow:0 3px 8px rgba(0,0,0,0.1);
+width:450px;
+}
+.canvas{
+max-height:300px;
+}
+.dashboard-btn {
+    display: inline-block;
+    padding: 8px 15px;
+    background: #7b68ee;
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: bold;
+    margin-bottom: 15px;
+    transition: 0.3s ease;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="navbar">
+
+<div>✔ TaskFlow Analytics</div>
+
+<div>
+Hi {{username}}
+<a href="/" class="dashboard-btn" style="color:white;margin-left:15px;">Dashboard</a>
+</div>
+</div>
+<div class="container">
+
+<div class="charts">
+
+<div class="chart-card">
+<h3>Task Progress</h3>
+<canvas id="taskChart"></canvas>
+</div>
+
+<div class="chart-card">
+<h3>Priority Distribution</h3>
+<canvas id="priorityChart"></canvas>
+</div>
+
+<div class="chart-card">
+<h3>Tasks Completed Per Month</h3>
+<canvas id="monthlyChart"></canvas>
+</div>
+
+<div class="chart-card">
+<h3>Tasks Due This Week</h3>
+<canvas id="weeklyChart"></canvas>
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+const ctx = document.getElementById("taskChart");
+
+new Chart(ctx, {
+    type: "doughnut",
+    data: {
+        labels: ["Completed","Pending","Overdue"],
+        datasets: [{
+            data: [
+                {{ completed_tasks | int }},
+                {{ pending_tasks | int }},
+                {{ overdue_tasks | int }}
+            ],
+            backgroundColor:[
+                "#28a745",
+                "#ffc107",
+                "#dc3545"
+            ]
+        }]
+    },
+    options:{
+        responsive:true
+    }
+});
+
+</script>
+<script>
+
+const priorityCtx = document.getElementById("priorityChart");
+
+new Chart(priorityCtx, {
+    type: "pie",
+    data: {
+        labels: ["High","Medium","Low"],
+        datasets: [{
+            data: [
+                {{ high_priority | int }},
+                {{ medium_priority | int }},
+                {{ low_priority | int }}
+            ],
+            backgroundColor:[
+                "#ff4d4d",
+                "#ffa500",
+                "#28a745"
+            ]
+        }]
+    }
+});
+
+</script>
+<script>
+
+const monthlyCtx = document.getElementById("monthlyChart");
+
+new Chart(monthlyCtx, {
+    type: "bar",
+    data: {
+        labels: {{ months | tojson }},
+        datasets: [{
+            label: "Completed Tasks",
+            data: {{ completed_counts | tojson }},
+            backgroundColor: "#5a4bd6"
+        }]
+    },
+    options:{
+        responsive:true,
+        scales:{
+            y:{
+                beginAtZero:true
+            }
+        }
+    }
+});
+
+</script>
+<script>
+
+const weeklyCtx = document.getElementById("weeklyChart");
+
+new Chart(weeklyCtx, {
+    type: "bar",
+    data: {
+        labels: ["Due in 7 Days"],
+        datasets: [{
+            label: "Tasks",
+            data: [{{ due_this_week | int }}],
+            backgroundColor: "#7b68ee"
+        }]
+    },
+    options:{
+        responsive:true,
+        scales:{
+            y:{
+                beginAtZero:true
+            }
+        }
+    }
+});
+
+</script>
+</body>
+</html>
